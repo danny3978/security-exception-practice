@@ -1,13 +1,12 @@
 package com.example.demo.entity;
 
 
-import com.example.demo.favorite.entity.Favorite;
-import com.example.demo.order.entity.Order;
+import com.example.demo.domain.favorite.entity.Favorite;
+import com.example.demo.domain.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 
 import java.util.List;

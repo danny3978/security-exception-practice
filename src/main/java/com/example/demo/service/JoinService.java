@@ -27,24 +27,26 @@ public class JoinService {
     private final String adminPassword = "iahdiu!@#QWEaosidjas";
 
     public JoinSuccess joinProcess(JoinDto joinDto) {
-        String username = joinDto.getUsername();
+        String email = joinDto.getEmail();
         String password = joinDto.getPassword();
 
-        Boolean isExist = userRepository.existsByUsername(username);
+        Boolean isExist = userRepository.existsByEmail(email);
 
         if(isExist) {
             throw new UserDuplicationException("중복된 사용자 입니다.");
         }
 
-        User user = User.create(
-                username,
-                bCryptPasswordEncoder.encode(password),
-                password.equals(adminPassword) ? adminRole : userRole
-        );
+        User user = User.builder()
+                .email(email)
+                .password(password.equals(adminPassword) ? bCryptPasswordEncoder.encode(adminPassword) : bCryptPasswordEncoder.encode(password))
+                .name(joinDto.getName())
+                .nickname(joinDto.getNickname())
+                .userRole(password.equals(adminPassword) ?  adminRole : userRole)
+                .build();
 
        user = userRepository.save(user);
 
-         return new JoinSuccess(user.getId(), "회원가입 성공", HttpStatus.CREATED.value());
+         return new JoinSuccess(user.getUserId(), "회원가입 성공", HttpStatus.CREATED.value());
     }
 
 }

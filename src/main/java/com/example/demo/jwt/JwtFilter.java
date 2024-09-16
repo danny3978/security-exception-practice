@@ -41,11 +41,11 @@ public class JwtFilter extends OncePerRequestFilter {
         String role = jwtUtil.getRole(token);
 
 
-        User user = User.token(
-                username,
-                "temp",
-                role.equals(UserRole.ROLE_USER) ? UserRole.ROLE_USER : UserRole.ROLE_ADMIN
-        );
+        User user = User.builder()
+                .name(username)
+                .password("aosjkdi")
+                .userRole(UserRole.valueOf(role))
+                .build();
 
 
         CustomUserDetails customUserDetails = new CustomUserDetails(user);

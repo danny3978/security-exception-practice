@@ -1,41 +1,61 @@
 package com.example.demo.entity;
 
 
+import com.example.demo.favorite.entity.Favorite;
+import com.example.demo.order.entity.Order;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
+
+import java.util.List;
 
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
+@Getter
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "user_Id")
+    private Long userId;
 
-    private String username;
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String nickname;
+
+    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String name;
+
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    @Column(name = "UserRole", nullable = false)
+    private UserRole userRole;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @BatchSize(size = 20)
+    private List<Order> orders;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @BatchSize(size = 20)
+    private List<Favorite> favorites;
 
-    private User(String username, String password, UserRole role) {
-        this.username = username;
+    @Builder
+    public User(String email, String nickname, String name, UserRole userRole,String password) {
+        this.email = email;
+        this.nickname = nickname;
+        this.name = name;
         this.password = password;
-        this.role = role;
+        this.userRole = userRole;
     }
-
-
-    public static User create(String username, String password, UserRole role) {
-        return new User(username, password, role);
-    }
-
-    public static User token(String username, String password, UserRole role) {
-        return new User(username, password, role);
+    public void update(String nickname, String email) {
+        this.nickname = nickname;
+        this.email = email;
     }
 }
